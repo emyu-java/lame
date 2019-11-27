@@ -30,6 +30,7 @@ public class LanChat extends JFrame {
         appPane.setRightComponent(chatPane);
         add(appPane);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setIconImage((new ImageIcon("icon.png")).getImage());
         setSize(700, 700);
         setBackground(Color.WHITE);
         setResizable(false);
