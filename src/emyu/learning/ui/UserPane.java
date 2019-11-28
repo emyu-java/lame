@@ -21,8 +21,6 @@ import emyu.learning.LanChat;
 import emyu.learning.network.BroadcastServerThread;
 
 public class UserPane extends JScrollPane {
-    //private JPanel container = new JPanel();
-    //private BoxLayout layout = new BoxLayout(container, BoxLayout.Y_AXIS);
     private DefaultListModel<UserView> users = new DefaultListModel<>();
     private JList<UserView> userButtons = new JList<>(users);
     private JViewport viewport;
@@ -32,12 +30,9 @@ public class UserPane extends JScrollPane {
     public UserPane(LanChat parent) {
         this.parent = parent;
         viewport = getViewport();
-//        container.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         viewport.setMinimumSize(new Dimension(200, 700));
         viewport.setMaximumSize(new Dimension(200, 700));
-        //viewport.add(container);
         viewport.add(userButtons);
-        //container.setLayout(layout);
         setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JLabel headerLabel = new JLabel("Online Users");
@@ -102,13 +97,10 @@ public class UserPane extends JScrollPane {
             for (DatagramPacket dp: chunks) {
                 String name = new String(dp.getData(), 0, dp.getLength());
                 InetAddress ip  = dp.getAddress();
-                UserView user = new UserView(name, ip, userViewParent);
                 if (!addedUsers.containsKey(ip)) {
+                    UserView user = new UserView(name, ip, userViewParent);
                     users.addElement(user);
                     addedUsers.put(ip, user);
-                    //container.add(user);
-                    //container.updateUI();
-                    //System.out.println(user);
                 }
             }
         }

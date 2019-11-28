@@ -8,24 +8,25 @@ public class MessageServer {
     private String message;
     private InetAddress ip;
 
-    public MessageServer(String message, InetAddress ip) {
+    public MessageServer(DatagramSocket ds, String message, InetAddress ip) {
+        this.ds = ds;
         this.message = message;
         this.ip = ip;
     }
 
     public boolean send() {
         try {
-            ds = new DatagramSocket(AppConstants.MESSAGE_PORT);
             DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), ip, AppConstants.MESSAGE_PORT);
-            ds.send(dp);
+            if (ds != null) {
+                ds.send(dp);
+            } else {
+                System.out.println("server: no socket");
+                return false;
+            }
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
-        } finally {
-            if (ds != null) {
-                ds.close();
-            }
         }
     }
 }

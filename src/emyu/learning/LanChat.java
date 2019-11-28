@@ -12,10 +12,11 @@ import java.util.Enumeration;
 
 public class LanChat extends JFrame {
     private UserPane userPane = new UserPane(this);
-    private ChatPane chatPane = new ChatPane();
+    private ChatPane chatPane = new ChatPane(this);
     private InetAddress broadcastIp;
     private InetAddress localIp;
     private String username;
+    private DatagramSocket ds;
 
     /**
      * The constructor.
@@ -74,6 +75,20 @@ public class LanChat extends JFrame {
 
     public ChatPane getChatPane() {
         return chatPane;
+    }
+
+    private void setSocket() throws SocketException {
+        ds = new DatagramSocket(AppConstants.MESSAGE_PORT);
+    }
+
+    public DatagramSocket getSocket() {
+        if (ds != null) return ds;
+        try {
+            setSocket();
+            return ds;
+        } catch (SocketException e) {
+            return null;
+        }
     }
 
     /**

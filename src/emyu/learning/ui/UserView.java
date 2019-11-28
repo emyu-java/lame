@@ -34,7 +34,7 @@ public class UserView extends JLabel {
 
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 2));
-        //startClientThread();
+        startClientThread();
     }
 
     public void setName(String name) {
@@ -62,9 +62,10 @@ public class UserView extends JLabel {
     }
 
     private void startClientThread() {
-        ClientThread ct = new ClientThread(new OnReceiveMessage() {
+        ClientThread ct = new ClientThread(parent.getParent().getSocket(), ip, new OnReceiveMessage() {
             @Override
             public void onReceive(DatagramPacket dp) {
+                System.out.println("onReceive called");
                 String body = new String(dp.getData(), 0, dp.getLength());
                 Message message = new Message(name, dp.getAddress().toString(), body, (new Date()).getTime());
                 if (message.save()) {
