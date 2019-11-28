@@ -7,13 +7,11 @@ import emyu.learning.network.OnReceiveMessage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.Date;
 
-public class UserView extends JButton implements ActionListener {
+public class UserView extends JLabel {
     private String name;
     private InetAddress ip;
     private UserPane parent;
@@ -25,6 +23,7 @@ public class UserView extends JButton implements ActionListener {
         JLabel lblName = new JLabel(name);
         JLabel lblIp = new JLabel(ip == null ? "" : ip.toString());
         lblName.setFont(new Font("sans-serif", Font.BOLD, 16));
+        lblName.setForeground(AppConstants.THEME_PURPLE);
         lblIp.setForeground(Color.GRAY);
 
         lblIp.setHorizontalAlignment(JLabel.RIGHT);
@@ -33,9 +32,9 @@ public class UserView extends JButton implements ActionListener {
         add(lblName);
         add(lblIp);
 
-//        setForeground(AppConstants.THEME_PURPLE);
+        setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 2));
-        startClientThread();
+        //startClientThread();
     }
 
     public void setName(String name) {
@@ -77,11 +76,4 @@ public class UserView extends JButton implements ActionListener {
         });
         ct.start();
     }
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-
-    }
-
-
 }

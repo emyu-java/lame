@@ -11,7 +11,6 @@ import java.net.*;
 import java.util.Enumeration;
 
 public class LanChat extends JFrame {
-    private JSplitPane appPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     private UserPane userPane = new UserPane(this);
     private ChatPane chatPane = new ChatPane();
     private InetAddress broadcastIp;
@@ -22,9 +21,9 @@ public class LanChat extends JFrame {
      * The constructor.
      */
     private LanChat() {
-        appPane.setLeftComponent(userPane);
-        appPane.setRightComponent(chatPane);
-        add(appPane);
+        setLayout(null);
+        userPane.setBounds(0, 0, 200, 700);
+        chatPane.setBounds(201, 2, 495, 665);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setIconImage((new ImageIcon("icon.png")).getImage());
         setTitle(AppConstants.APP_TITLE);
@@ -32,6 +31,8 @@ public class LanChat extends JFrame {
         setBackground(Color.WHITE);
         setResizable(false);
         setVisible(true);
+        add(userPane);
+        add(chatPane);
         initialize();
         userPane.startReceivingBroadCast();
     }
@@ -69,6 +70,10 @@ public class LanChat extends JFrame {
 
     public String getUsername() {
         return this.username;
+    }
+
+    public ChatPane getChatPane() {
+        return chatPane;
     }
 
     /**
