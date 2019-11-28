@@ -1,18 +1,14 @@
 package emyu.learning;
 
-import emyu.learning.network.BroadcastServerThread;
 import emyu.learning.network.ClientThread;
 import emyu.learning.ui.ChatPane;
 import emyu.learning.ui.UserPane;
-import emyu.learning.ui.UserView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.net.*;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
 
 public class LanChat extends JFrame {
     private JSplitPane appPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -31,6 +27,7 @@ public class LanChat extends JFrame {
         add(appPane);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setIconImage((new ImageIcon("icon.png")).getImage());
+        setTitle(AppConstants.APP_TITLE);
         setSize(700, 700);
         setBackground(Color.WHITE);
         setResizable(false);

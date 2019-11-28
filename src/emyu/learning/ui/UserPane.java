@@ -31,6 +31,8 @@ public class UserPane extends JScrollPane {
         setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JLabel headerLabel = new JLabel("Online Users");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        headerLabel.setForeground(AppConstants.THEME_PURPLE);
+        headerLabel.setHorizontalAlignment(JLabel.CENTER);
         setColumnHeaderView(headerLabel);
     }
 
@@ -39,38 +41,53 @@ public class UserPane extends JScrollPane {
         parent.setUsername(username);
 
         // construct a UserView with broadcast IP because the server needs to send to the broadcast ip
-        (new BroadcastServerThread(new UserView(parent.getUsername(), parent.getBroadcastIp()))).start();
+        (new BroadcastServerThread(new UserView(parent.getUsername(), parent.getBroadcastIp(), this))).start();
 
-        SwingWorker<Void, DatagramPacket> broadcastClient = new SwingWorker<Void, DatagramPacket>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                while (true) {
-                    MulticastSocket ds = new MulticastSocket(AppConstants.BROADCAST_PORT);
-                    byte[] buf = new byte[1024];
-                    DatagramPacket dp = new DatagramPacket(buf, 1024);
-                    ds.receive(dp);
-                    if (!dp.getAddress().equals(parent.getLocalIp())) {
-                        publish(dp);
-                    }
-                }
-            }
-
-            @Override
-            protected void process(List<DatagramPacket> chunks) {
-                for (DatagramPacket dp: chunks) {
-                    String name = new String(dp.getData(), 0, dp.getLength());
-                    InetAddress ip  = dp.getAddress();
-                    UserView user = new UserView(name, ip);
-                    if (!users.containsKey(ip)) {
-                        users.put(ip, user);
-                        container.add(user);
-                        container.updateUI();
-                        System.out.println(user);
-                    }
-                }
-            }
-        };
-
+        BroadcastClient broadcastClient = new BroadcastClient(this);
         broadcastClient.execute();
+    }
+
+    public LanChat getParent() {
+        return parent;
+    }
+
+
+    /**
+     *
+     */
+    class BroadcastClient extends SwingWorker<Void, DatagramPacket> {
+        private UserPane userViewParent;
+
+        BroadcastClient(UserPane parent) {
+            this.userViewParent = parent;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            while (true) {
+                MulticastSocket ds = new MulticastSocket(AppConstants.BROADCAST_PORT);
+                byte[] buf = new byte[1024];
+                DatagramPacket dp = new DatagramPacket(buf, 1024);
+                ds.receive(dp);
+                if (!dp.getAddress().equals(userViewParent.getParent().getLocalIp())) {
+                    publish(dp);
+                }
+            }
+        }
+
+        @Override
+        protected void process(List<DatagramPacket> chunks) {
+            for (DatagramPacket dp: chunks) {
+                String name = new String(dp.getData(), 0, dp.getLength());
+                InetAddress ip  = dp.getAddress();
+                UserView user = new UserView(name, ip, userViewParent);
+                if (!users.containsKey(ip)) {
+                    users.put(ip, user);
+                    container.add(user);
+                    container.updateUI();
+                    System.out.println(user);
+                }
+            }
+        }
     }
 }

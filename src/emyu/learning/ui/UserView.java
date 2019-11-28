@@ -1,14 +1,23 @@
 package emyu.learning.ui;
 
+import emyu.learning.AppConstants;
+import emyu.learning.network.ClientThread;
+import emyu.learning.network.OnReceiveMessage;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-public class UserView extends JButton {
+public class UserView extends JButton implements ActionListener {
     private String name;
     private InetAddress ip;
+    private UserPane parent;
 
-    public UserView(String name, InetAddress ip) {
+    public UserView(String name, InetAddress ip, UserPane parent) {
+        this.parent = parent;
         setName(name);
         setIp(ip);
         JLabel lblName = new JLabel(name);
@@ -22,7 +31,7 @@ public class UserView extends JButton {
         add(lblName);
         add(lblIp);
 
-        setBackground(Color.WHITE);
+        setForeground(AppConstants.THEME_PURPLE);
         setLayout(new GridLayout(1, 2));
     }
 
@@ -45,4 +54,24 @@ public class UserView extends JButton {
     public String toString() {
         return this.name + " (" + this.ip.toString() + ")";
     }
+
+    public UserPane getParent() {
+        return parent;
+    }
+
+    private void startClientThread() {
+        ClientThread ct = new ClientThread(new OnReceiveMessage() {
+            @Override
+            public void onReceive(DatagramPacket dp) {
+
+            }
+        });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+
+    }
+
+
 }

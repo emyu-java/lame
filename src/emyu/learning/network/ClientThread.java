@@ -6,24 +6,34 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class ClientThread extends Thread {
-    DatagramSocket ds;
+    private DatagramSocket ds;
+    private OnReceiveMessage onReceiveMessage;
+
+    public ClientThread(OnReceiveMessage onReceiveMessage) {
+        setOnReceiveMessage(onReceiveMessage);
+    }
+
+    public void setOnReceiveMessage(OnReceiveMessage onReceiveMessage) {
+        this.onReceiveMessage = onReceiveMessage;
+    }
+
     @Override
     public void run() {
-        while (true) {
-            try {
-                ds = new DatagramSocket(3000);
-                byte[] buf = new byte[1024];
-                DatagramPacket dp = new DatagramPacket(buf, 1024);
-                ds.receive(dp);
-                String message = new String(dp.getData(), 0, dp.getLength());
-                System.out.println(message);
-            } catch (SocketException e) {
-                System.out.println(e.getMessage());
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            } finally {
-                ds.close();
+        try {
+            ds = new DatagramSocket(3000);
+            byte[] buf = new byte[1024];
+            DatagramPacket dp = new DatagramPacket(buf, 1024);
+            ds.receive(dp);
+            if (onReceiveMessage != null) {
+                onReceiveMessage.onReceive(dp);
             }
+//            String message = new String(dp.getData(), 0, dp.getLength());
+//            System.out.println(message);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            ds.close();
         }
+        run();
     }
 }
