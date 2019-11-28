@@ -36,6 +36,6 @@ public class ClientThread extends Thread {
         } catch (Exception e) {
             System.out.println("Client thread: " + e.getMessage());
         }
-//        run();
+        run();
     }
 }
