@@ -33,7 +33,7 @@ public class UserView extends JButton implements ActionListener {
         add(lblName);
         add(lblIp);
 
-        setForeground(AppConstants.THEME_PURPLE);
+//        setForeground(AppConstants.THEME_PURPLE);
         setLayout(new GridLayout(1, 2));
         startClientThread();
     }

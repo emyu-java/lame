@@ -31,7 +31,7 @@ public class UserPane extends JScrollPane {
         setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JLabel headerLabel = new JLabel("Online Users");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        headerLabel.setForeground(AppConstants.THEME_PURPLE);
+//        headerLabel.setForeground(AppConstants.THEME_PURPLE);
         headerLabel.setHorizontalAlignment(JLabel.CENTER);
         setColumnHeaderView(headerLabel);
     }

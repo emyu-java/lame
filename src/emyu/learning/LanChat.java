@@ -77,6 +77,5 @@ public class LanChat extends JFrame {
      */
     public static void main(String[] args) {
         LanChat c = new LanChat();
-        (new ClientThread()).start();
     }
 }
