@@ -1,6 +1,7 @@
 package emyu.learning.ui;
 
 import emyu.learning.AppConstants;
+import emyu.learning.models.Message;
 import emyu.learning.network.ClientThread;
 import emyu.learning.network.OnReceiveMessage;
 
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.Date;
 
 public class UserView extends JButton implements ActionListener {
     private String name;
@@ -33,6 +35,7 @@ public class UserView extends JButton implements ActionListener {
 
         setForeground(AppConstants.THEME_PURPLE);
         setLayout(new GridLayout(1, 2));
+        startClientThread();
     }
 
     public void setName(String name) {
@@ -63,9 +66,16 @@ public class UserView extends JButton implements ActionListener {
         ClientThread ct = new ClientThread(new OnReceiveMessage() {
             @Override
             public void onReceive(DatagramPacket dp) {
-
+                String body = new String(dp.getData(), 0, dp.getLength());
+                Message message = new Message(name, dp.getAddress().toString(), body, (new Date()).getTime());
+                if (message.save()) {
+                    System.out.println("message saved: " + name + " (" + dp.getAddress().toString() + ")");
+                } else {
+                    System.out.println("could not save message: " + name + " (" + dp.getAddress().toString() + ")");
+                }
             }
         });
+        ct.start();
     }
 
     @Override

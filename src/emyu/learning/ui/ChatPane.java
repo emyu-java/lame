@@ -22,6 +22,7 @@ public class ChatPane extends JPanel {
         messageBox.addActionListener((ActionEvent actionEvent) -> {
             (new ServerThread(actionEvent.getActionCommand())).start();
 //            System.out.println(actionEvent.getSource());
+            messageBox.setText(null);
         });
         add(messageBox);
     }
