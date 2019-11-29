@@ -6,9 +6,14 @@ import emyu.learning.models.Message;
 import emyu.learning.network.MessageServer;
 
 import javax.swing.*;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.net.InetAddress;
+import java.util.Date;
 
 public class ChatPane extends JPanel  implements ListCellRenderer<Message> {
     private LanChat parent;
@@ -38,6 +43,7 @@ public class ChatPane extends JPanel  implements ListCellRenderer<Message> {
         messageBox.setEnabled(false);
 
         messagePane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        messagePane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         messageContainer.setCellRenderer(this);
         add(messagePane);
         add(messageBox);
@@ -48,12 +54,33 @@ public class ChatPane extends JPanel  implements ListCellRenderer<Message> {
         System.out.println("message server set");
         messageBox.setEnabled(true);
         messageBox.addActionListener((ActionEvent actionEvent) -> {
-            (new MessageServer(parent.getSocket(), actionEvent.getActionCommand(), receiverIp)).send();
+            boolean sent = (new MessageServer(parent.getSocket(), actionEvent.getActionCommand(), receiverIp)).send();
+            if (sent) {
+                Message message = new Message(parent.getUsername(), actionEvent.getActionCommand(), (new Date()).getTime(), Message.IncomingOrOutgoing.OUTGOING);
+                ((DefaultListModel<Message>) messageContainer.getModel()).addElement(message);
+            }
             messageBox.setText("");
         });
     }
 
     public void setMessageListModel(DefaultListModel<Message> listModel) {
+        listModel.addListDataListener(new ListDataListener() {
+            @Override
+            public void intervalAdded(ListDataEvent listDataEvent) {
+                JScrollBar vertical = messagePane.getVerticalScrollBar();
+                vertical.setValue(vertical.getMaximum());
+            }
+
+            @Override
+            public void intervalRemoved(ListDataEvent listDataEvent) {
+                System.out.println("intervalRemoved");
+            }
+
+            @Override
+            public void contentsChanged(ListDataEvent listDataEvent) {
+                System.out.println("contentsChanged");
+            }
+        });
         messageContainer.setModel(listModel);
     }
 
@@ -61,8 +88,9 @@ public class ChatPane extends JPanel  implements ListCellRenderer<Message> {
     public Component getListCellRendererComponent(JList<? extends Message> jList, Message message, int i, boolean b, boolean b1) {
         JPanel messagePanel = new JPanel();
         messagePanel.setMinimumSize(new Dimension(getWidth(), 200));
-        messagePanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(AppConstants.THEME_PURPLE, 1), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        messagePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppConstants.THEME_PURPLE));
         JLabel lblMsg = new JLabel(message.getBody());
+        lblMsg.setHorizontalAlignment(JLabel.LEFT);
         messagePanel.add(lblMsg);
         return messagePanel;
     }

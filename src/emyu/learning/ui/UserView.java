@@ -68,15 +68,8 @@ public class UserView extends JLabel {
             @Override
             public void onReceive(DatagramPacket dp) {
                 String body = new String(dp.getData(), 0, dp.getLength());
-                Message message = new Message(name, dp.getAddress().toString(), body, (new Date()).getTime());
-                if (message.getUsername() != parent.getParent().getUsername()) {
-                    messages.addElement(message);
-//                    if (message.save()) {
-//                        System.out.println("message saved: " + name + " (" + dp.getAddress().toString() + ")");
-//                    } else {
-//                        System.out.println("could not save message: " + name + " (" + dp.getAddress().toString() + ")");
-//                    }
-                }
+                Message message = new Message(name, body, (new Date()).getTime(), Message.IncomingOrOutgoing.INCOMING);
+                messages.addElement(message);
             }
         });
         ct.start();
