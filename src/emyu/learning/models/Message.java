@@ -1,5 +1,7 @@
 package emyu.learning.models;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Date;
 
 public class Message extends Db {

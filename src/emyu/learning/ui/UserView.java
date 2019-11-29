@@ -9,12 +9,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class UserView extends JLabel {
     private String name;
     private InetAddress ip;
     private UserPane parent;
+    private DefaultListModel<Message> messages = new DefaultListModel<>();
 
     public UserView(String name, InetAddress ip, UserPane parent) {
         this.parent = parent;
@@ -65,16 +67,22 @@ public class UserView extends JLabel {
         ClientThread ct = new ClientThread(parent.getParent().getSocket(), ip, new OnReceiveMessage() {
             @Override
             public void onReceive(DatagramPacket dp) {
-                System.out.println("onReceive called");
                 String body = new String(dp.getData(), 0, dp.getLength());
                 Message message = new Message(name, dp.getAddress().toString(), body, (new Date()).getTime());
-                if (message.save()) {
-                    System.out.println("message saved: " + name + " (" + dp.getAddress().toString() + ")");
-                } else {
-                    System.out.println("could not save message: " + name + " (" + dp.getAddress().toString() + ")");
+                if (message.getUsername() != parent.getParent().getUsername()) {
+                    messages.addElement(message);
+//                    if (message.save()) {
+//                        System.out.println("message saved: " + name + " (" + dp.getAddress().toString() + ")");
+//                    } else {
+//                        System.out.println("could not save message: " + name + " (" + dp.getAddress().toString() + ")");
+//                    }
                 }
             }
         });
         ct.start();
+    }
+
+    public DefaultListModel getMessages() {
+        return messages;
     }
 }

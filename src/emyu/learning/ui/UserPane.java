@@ -43,12 +43,10 @@ public class UserPane extends JScrollPane {
         userButtons.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         userButtons.setSelectionBackground(AppConstants.THEME_PURPLE);
         userButtons.setSelectionForeground(AppConstants.TEXT_ON_DARK);
-        userButtons.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                UserView user = users.getElementAt(listSelectionEvent.getLastIndex());
-                parent.getChatPane().setMessageServer(user.getIp());
-            }
+        userButtons.addListSelectionListener((ListSelectionEvent listSelectionEvent) -> {
+            UserView user = users.getElementAt(listSelectionEvent.getLastIndex());
+            parent.getChatPane().setMessageServer(user.getIp());
+            parent.getChatPane().setMessageListModel(user.getMessages());
         });
     }
 

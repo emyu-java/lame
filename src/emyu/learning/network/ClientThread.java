@@ -33,6 +33,7 @@ public class ClientThread extends Thread {
                     onReceiveMessage.onReceive(dp);
                 }
             }
+            Thread.sleep(5000);
         } catch (Exception e) {
             System.out.println("Client thread: " + e.getMessage());
         }
